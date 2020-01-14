@@ -86,13 +86,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Transactional(rollbackFor = Exception.class)
 	public boolean deleteUser(String userId) {
 		//1.删除用户
-		this.removeById(userId);
+		//this.removeById(userId);
+		this.removeById(userId);//物理删除
 		//2.删除用户部门关联关系
 		LambdaQueryWrapper<SysUserDepart> query = new LambdaQueryWrapper<SysUserDepart>();
 		query.eq(SysUserDepart::getUserId, userId);
 		sysUserDepartMapper.delete(query);
 		//3.删除用户角色关联关系
-		//TODO
+		LambdaQueryWrapper<SysUserRole> queryRole = new LambdaQueryWrapper<SysUserRole>();
+		queryRole.eq(SysUserRole::getUserId, userId);
+		sysUserRoleMapper.delete(queryRole);
 		return false;
 	}
 

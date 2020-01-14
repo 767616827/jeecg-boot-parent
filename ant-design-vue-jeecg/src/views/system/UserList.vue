@@ -208,13 +208,13 @@
             }
           },*/
           {
-            title: '用户账号',
+            title: '手机号',
             align: "center",
             dataIndex: 'username',
             width: 120
           },
           {
-            title: '真实姓名',
+            title: '用户名称',
             align: "center",
             width: 100,
             dataIndex: 'realname',
@@ -240,15 +240,16 @@
             width: 180,
             dataIndex: 'birthday'
           },
-          {
+          /*{
             title: '手机号码',
             align: "center",
             width: 100,
             dataIndex: 'phone'
-          },
+          },*/
           {
             title: '邮箱',
             align: "center",
+            width: 180,
             dataIndex: 'email'
           },
           {

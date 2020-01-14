@@ -22,8 +22,8 @@
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
-        <a-form-item label="用户账号" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="请输入用户账号" v-decorator="[ 'username', validatorRules.username]" :readOnly="!!model.id"/>
+        <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-input placeholder="请输入手机号码" v-decorator="[ 'username', validatorRules.username]" :readOnly="!!model.id"/>
         </a-form-item>
 
         <template v-if="!model.id">
@@ -36,13 +36,13 @@
           </a-form-item>
         </template>
 
-        <a-form-item label="用户名字" :labelCol="labelCol" :wrapperCol="wrapperCol" >
+        <a-form-item label="用户名称" :labelCol="labelCol" :wrapperCol="wrapperCol" >
           <a-input placeholder="请输入用户名称" v-decorator="[ 'realname', validatorRules.realname]" />
         </a-form-item>
 
-        <a-form-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!--<a-form-item label="工号" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入工号" v-decorator="[ 'workNo', validatorRules.workNo]" />
-        </a-form-item>
+        </a-form-item>-->
 
         <a-form-item label="职务" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-select-position placeholder="请选择职务" :multiple="false" v-decorator="['post', {}]"/>
@@ -62,9 +62,9 @@
         </a-form-item>
 
         <!--部门分配-->
-        <a-form-item label="部门分配" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
+        <a-form-item label="监测点权限" :labelCol="labelCol" :wrapperCol="wrapperCol" v-show="!departDisabled">
           <a-input-search
-            placeholder="点击右侧按钮选择部门"
+            placeholder="点击右侧按钮选择监测点权限"
             v-model="checkedDepartNameString"
             disabled
             @search="onSearch">
@@ -108,9 +108,9 @@
           <a-input placeholder="请输入邮箱" v-decorator="[ 'email', validatorRules.email]" />
         </a-form-item>
 
-        <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
+        <!--<a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入手机号码" :disabled="isDisabledAuth('user:form:phone')" v-decorator="[ 'phone', validatorRules.phone]" />
-        </a-form-item>
+        </a-form-item>-->
 
         <a-form-item label="座机" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input placeholder="请输入座机" v-decorator="[ 'telephone', validatorRules.telephone]"/>
@@ -171,7 +171,7 @@
         validatorRules:{
           username:{
             rules: [{
-              required: true, message: '请输入用户账号!'
+              required: true, message: '请输入手机号码!'
             },{
               validator: this.validateUsername,
             }]
@@ -394,9 +394,9 @@
         const form = this.form;
         const confirmpassword=form.getFieldValue('confirmpassword');
 
-        if (value && confirmpassword && value !== confirmpassword) {
+        /*if (value && confirmpassword && value !== confirmpassword) {
           callback('两次输入的密码不一样！');
-        }
+        }*/
         if (value && this.confirmDirty) {
           form.validateFields(['confirm'], { force: true })
         }
@@ -461,19 +461,30 @@
         }
       },
       validateUsername(rule, value, callback){
-        var params = {
-          tableName: 'sys_user',
-          fieldName: 'username',
-          fieldVal: value,
-          dataId: this.userId
-        };
-        duplicateCheck(params).then((res) => {
-          if (res.success) {
+        if(!value){
           callback()
-        } else {
-          callback("用户名已存在!")
+        }else{
+          //update-begin--Author:kangxiaolin  Date:20190826 for：[05] 手机号不支持199号码段--------------------
+          if(new RegExp(/^1[3|4|5|7|8|9][0-9]\d{8}$/).test(value) || value=="admin"){
+            //update-end--Author:kangxiaolin  Date:20190826 for：[05] 手机号不支持199号码段--------------------
+
+            var params = {
+              tableName: 'sys_user',
+              fieldName: 'username',
+              fieldVal: value,
+              dataId: this.userId
+            };
+            duplicateCheck(params).then((res) => {
+              if (res.success) {
+                callback()
+              } else {
+                callback("手机号已存在!")
+              }
+            })
+          }else{
+            callback("请输入正确格式的手机号码!");
+          }
         }
-      })
       },
       validateWorkNo(rule, value, callback){
         var params = {

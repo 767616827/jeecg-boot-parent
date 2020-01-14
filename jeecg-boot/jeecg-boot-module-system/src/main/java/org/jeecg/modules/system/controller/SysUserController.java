@@ -125,6 +125,8 @@ public class SysUserController {
 			user.setPassword(passwordEncode);
 			user.setStatus(1);
 			user.setDelFlag("0");
+            //赋值手机号（username就是手机号）
+            user.setPhone(user.getUsername());
 			sysUserService.addUserWithRole(user, selectedRoles);
             sysUserService.addUserWithDepart(user, selectedDeparts);
 			result.success("添加成功！");
